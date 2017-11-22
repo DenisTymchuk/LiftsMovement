@@ -6,12 +6,13 @@ import java.util.List;
  * Created by Oksa on 20.11.2017.
  */
 public class Lift {
+    private static final int MAX_COUNT_OF_PASSENGER = 5;
+
     private int currentPosition;
     private int resultFloor;
     private String liftState;
     private int name;
     private int distance;
-    private static final int MAX_COUNT_OF_PASSENGER = 5;
     private int countOfPassenger;
 
     public Lift(int currentPosition, int resultFloor, int name, int countOfPassenger) {
@@ -25,15 +26,17 @@ public class Lift {
             this.liftState = "UP";
         }
         this.name = name;
-        this.countOfPassenger = countOfPassenger;
+        if (countOfPassenger <= MAX_COUNT_OF_PASSENGER) {
+            this.countOfPassenger = countOfPassenger;
+        }
     }
 
-    public static int searchLift(List<Lift> lifts, int userPosition, String userDirection) {
+    public static int searchLiftId(List<Lift> lifts, int userPosition, String userDirection) {
         int result = -1;
         boolean liftFound = false;
         int distance = Integer.MAX_VALUE;
         for (int i = 0; i < lifts.size(); i++) {
-            if (lifts.get(i).isRelated(lifts.get(i), userPosition, userDirection) && lifts.get(i).getCountOfPassenger() < Lift.MAX_COUNT_OF_PASSENGER) {
+            if (lifts.get(i).isRelated(userPosition, userDirection) && lifts.get(i).getCountOfPassenger() < Lift.MAX_COUNT_OF_PASSENGER) {
                 lifts.get(i).setDistance(Math.abs(lifts.get(i).getCurrentPosition() - userPosition));
                 if (lifts.get(i).getDistance() < distance) {
                     distance = lifts.get(i).getDistance();
@@ -43,7 +46,7 @@ public class Lift {
             }
         }
 
-        if (liftFound) return result;
+        if (liftFound) {return result;}
 
         for (int i = 0; i < lifts.size(); i++) {
             lifts.get(i).setDistance(Math.abs(lifts.get(i).getResultFloor() - userPosition));
@@ -59,9 +62,9 @@ public class Lift {
         return result;
     }
 
-    public boolean isRelated(Lift lift, int userPosition, String userDirection) {
-        return (userDirection.equals(lift.getLiftState()) && ((lift.getCurrentPosition() <= userPosition && userPosition < lift.getResultFloor())
-                || (lift.getCurrentPosition() >= userPosition && userPosition > lift.getResultFloor())));
+    public boolean isRelated(int userPosition, String userDirection) {
+        return (userDirection.equals(this.getLiftState()) && ((this.getCurrentPosition() <= userPosition && userPosition < this.getResultFloor())
+                || (this.getCurrentPosition() >= userPosition && userPosition > this.getResultFloor())));
     }
 
     public int getCurrentPosition() {

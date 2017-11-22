@@ -29,9 +29,9 @@ public class LiftTest {
         lifts3.add(new Lift(8,5,3,4));
 
         return new Object[][] {
-                {3, Lift.searchLift(lifts1,6,"DOWN")},
-                {2, Lift.searchLift(lifts2, 11, "UP")},
-                {3, Lift.searchLift(lifts3, 7, "DOWN")}
+                {3, Lift.searchLiftId(lifts1,6,"DOWN")},
+                {2, Lift.searchLiftId(lifts2, 11, "UP")},
+                {3, Lift.searchLiftId(lifts3, 7, "DOWN")}
         };
     }
 
