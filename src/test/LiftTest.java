@@ -1,4 +1,4 @@
-package com.company;
+package test;
 
 import com.company.Lift;
 import org.testng.annotations.DataProvider;
@@ -24,14 +24,14 @@ public class LiftTest {
         lifts2.add(new Lift(9,5,2,0));
 
         ArrayList<Lift> lifts3 = new ArrayList<>();
-        lifts3.add(new Lift(2,8,1,0));
-        lifts3.add(new Lift(4,4,2,0));
-        lifts3.add(new Lift(6,1,3,0));
+        lifts3.add(new Lift(9,1,1,0));
+        lifts3.add(new Lift(15,2,2,0));
+        lifts3.add(new Lift(8,5,3,4));
 
         return new Object[][] {
                 {3, Lift.searchLift(lifts1,6,"DOWN")},
                 {2, Lift.searchLift(lifts2, 11, "UP")},
-                {1, Lift.searchLift(lifts3, 7, "DOWN")}
+                {3, Lift.searchLift(lifts3, 7, "DOWN")}
         };
     }
 

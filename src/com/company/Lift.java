@@ -1,6 +1,5 @@
 package com.company;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,8 +8,7 @@ import java.util.List;
 public class Lift {
     private int currentPosition;
     private int resultFloor;
-    private boolean isMovedUp;
-    private boolean isMovedDown;
+    private String liftState;
     private int name;
     private int distance;
     private static final int MAX_COUNT_OF_PASSENGER = 5;
@@ -20,50 +18,50 @@ public class Lift {
         this.currentPosition = currentPosition;
         this.resultFloor = resultFloor;
         if (currentPosition == resultFloor) {
-            this.isMovedUp = false;
-            this.isMovedDown = false;
+            this.liftState = "STAND";
         } else if (currentPosition > resultFloor) {
-            this.isMovedDown = true;
+            this.liftState = "DOWN";
         } else {
-            this.isMovedUp = true;
+            this.liftState = "UP";
         }
         this.name = name;
         this.countOfPassenger = countOfPassenger;
     }
 
     public static int searchLift(List<Lift> lifts, int userPosition, String userDirection) {
-        boolean userUp = false;
-        boolean userDown = false;
-        if (userDirection.equals("UP")) userUp = true;
-        if (userDirection.equals("DOWN")) userDown = true;
-
-        int result = 555;
+        int result = -1;
         boolean liftFound = false;
+        int distance = Integer.MAX_VALUE;
         for (int i = 0; i < lifts.size(); i++) {
-            if ((userUp && lifts.get(i).isMovedUp()) && (userPosition > lifts.get(i).getCurrentPosition()) && (userPosition <= lifts.get(i).getResultFloor()) && lifts.get(i).getCountOfPassenger() < Lift.getMaxCountOfPassenger()) {
-                liftFound = true;
-                result = lifts.get(i).getName();
-            }
-            if ((userDown && lifts.get(i).isMovedDown()) && (userPosition < lifts.get(i).getCurrentPosition()) && userPosition >= lifts.get(i).getResultFloor() && lifts.get(i).getCountOfPassenger() < Lift.getMaxCountOfPassenger()) {
-                liftFound = true;
-                result = lifts.get(i).getName();
+            if (lifts.get(i).isRelated(lifts.get(i), userPosition, userDirection) && lifts.get(i).getCountOfPassenger() < Lift.MAX_COUNT_OF_PASSENGER) {
+                lifts.get(i).setDistance(Math.abs(lifts.get(i).getCurrentPosition() - userPosition));
+                if (lifts.get(i).getDistance() < distance) {
+                    distance = lifts.get(i).getDistance();
+                    result = lifts.get(i).getName();
+                    liftFound = true;
+                }
             }
         }
+
+        if (liftFound) return result;
 
         for (int i = 0; i < lifts.size(); i++) {
             lifts.get(i).setDistance(Math.abs(lifts.get(i).getResultFloor() - userPosition));
         }
 
-        int distance = 1000;
-        if (!liftFound) {
-            for (int i = 0; i < lifts.size(); i++) {
-                if ((lifts.get(i).getDistance() < distance) && (lifts.get(i).getCountOfPassenger() < Lift.getMaxCountOfPassenger())) {
-                    distance = lifts.get(i).getDistance();
-                    result = lifts.get(i).getName();
-                }
+        distance = Integer.MAX_VALUE;
+        for (int i = 0; i < lifts.size(); i++) {
+            if ((lifts.get(i).getDistance() < distance) && (lifts.get(i).getCountOfPassenger() < Lift.getMaxCountOfPassenger())) {
+                distance = lifts.get(i).getDistance();
+                result = lifts.get(i).getName();
             }
         }
         return result;
+    }
+
+    public boolean isRelated(Lift lift, int userPosition, String userDirection) {
+        return (userDirection.equals(lift.getLiftState()) && ((lift.getCurrentPosition() <= userPosition && userPosition < lift.getResultFloor())
+                || (lift.getCurrentPosition() >= userPosition && userPosition > lift.getResultFloor())));
     }
 
     public int getCurrentPosition() {
@@ -80,22 +78,6 @@ public class Lift {
 
     public void setResultFloor(int resultFloor) {
         this.resultFloor = resultFloor;
-    }
-
-    public boolean isMovedUp() {
-        return isMovedUp;
-    }
-
-    public void setMovedUp(boolean movedUp) {
-        isMovedUp = movedUp;
-    }
-
-    public boolean isMovedDown() {
-        return isMovedDown;
-    }
-
-    public void setMovedDown(boolean movedDown) {
-        isMovedDown = movedDown;
     }
 
     public int getName() {
@@ -124,5 +106,13 @@ public class Lift {
 
     public static int getMaxCountOfPassenger() {
         return MAX_COUNT_OF_PASSENGER;
+    }
+
+    public String getLiftState() {
+        return liftState;
+    }
+
+    public void setLiftState(String liftState) {
+        this.liftState = liftState;
     }
 }
